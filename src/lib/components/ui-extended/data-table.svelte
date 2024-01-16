@@ -3,13 +3,19 @@
 	import * as Table from "$lib/components/ui/table";
 	import { readable } from "svelte/store";
 	import DataTableActions from "./data-table-actions.svelte";
+	import { addPagination } from "svelte-headless-table/plugins";
+	// import { Button } from "$lib/components/ui/button";
+	import * as Pagination from "$lib/components/ui/pagination";
 
 	import type { ElfTallyRecord } from "$lib/types";
 	export let records: ElfTallyRecord[] = [];
 
 	// https://svelte-headless-table.bryanmylee.com/docs/api/create-table
 	// https://learn.svelte.dev/tutorial/writable-stores
-	const table = createTable(readable(records));
+	const pageSize: number = 10;
+	const table = createTable(readable(records), {
+		page: addPagination({ initialPageSize: pageSize })
+	});
 
 	const columns = table.createColumns([
 		table.column({ accessor: "name", header: "Name" }),
@@ -24,7 +30,12 @@
 
 	// The table view model is a reactive object that contains all the information needed to render the table.
 	// It returns 4 readable stores
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs } = table.createViewModel(columns);
+	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
+		table.createViewModel(columns);
+
+	// state stores that are used in the pagination control
+	// const { pageCount, hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
+	const { pageIndex } = pluginStates.page;
 
 	// Uncomment this to check the console of what cell.render() returns, it just returns the string of the cell value
 	// In this case it is ["Name", "Tally", "Tag"]
@@ -33,7 +44,6 @@
 	// 		console.log(cell);
 	// 	}
 	// }
-
 </script>
 
 <div class="rounded-md border">
@@ -48,7 +58,7 @@
 							<!-- Subscribe is based on  -->
 							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
 								<!-- Styling the last column to the minimum width -->
-								<Table.Head class={idx === headerRow.cells.length - 1 ? "w-10" : ""} {...attrs}>
+								<Table.Head class={idx === headerRow.cells.length - 1 ? "w-20" : ""} {...attrs}>
 									<!-- cell is the HeaderCell component calling render will return a RenderConfig instance -->
 									<!-- RenderConfig is passing to Render component to render-->
 									<Render of={cell.render()} />
@@ -75,4 +85,49 @@
 			{/each}
 		</Table.Body>
 	</Table.Root>
+	<!-- Pagination Control (Example from https://www.shadcn-svelte.com/docs/components/data-table) -->
+	<!-- <div class="flex items-center justify-end space-x-2 py-4 mr-2">
+		<Button
+			variant="outline"
+			size="sm"
+			on:click={() => ($pageIndex = $pageIndex - 1)}
+			disabled={!$hasPreviousPage}>Previous</Button
+		>
+		<Button
+			variant="outline"
+			size="sm"
+			disabled={!$hasNextPage}
+			on:click={() => ($pageIndex = $pageIndex + 1)}>Next</Button
+		>
+	</div> -->
+	<!-- Pagination Control (Example from https://www.shadcn-svelte.com/docs/components/pagination) -->
+	<div class="flex items-center justify-end space-x-2 py-4 m-2">
+	<Pagination.Root count={records.length} perPage={pageSize} let:pages let:currentPage>
+		<Pagination.Content>
+			<Pagination.Item>
+				<Pagination.PrevButton on:click={() => ($pageIndex = $pageIndex - 1)}>
+					<span class="hidden sm:block">Previous</span>
+				</Pagination.PrevButton>
+			</Pagination.Item>
+			{#each pages as page (page.key)}
+				{#if page.type === "ellipsis"}
+					<Pagination.Item>
+						<Pagination.Ellipsis />
+					</Pagination.Item>
+				{:else}
+					<Pagination.Item>
+						<Pagination.Link {page} isActive={currentPage == page.value}>
+							{page.value}
+						</Pagination.Link>
+					</Pagination.Item>
+				{/if}
+			{/each}
+			<Pagination.Item>
+				<Pagination.NextButton on:click={() => ($pageIndex = $pageIndex + 1)}>
+					<span class="hidden sm:block">Next</span>
+				</Pagination.NextButton>
+			</Pagination.Item>
+		</Pagination.Content>
+	</Pagination.Root>
+	</div>
 </div>
