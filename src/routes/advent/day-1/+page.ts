@@ -6,7 +6,7 @@ import type { ElfTallyRecord } from "$lib/types";
  * @param {any} {fetch}
  * @returns {any}
  */
-export const load: PageLoad = async ({ fetch }) => {
+export const load: PageLoad = async ({ fetch, data }) => {
 	// Load the page data from https://advent.sveltesociety.dev/data/2023/day-one.json
 	const response = await fetch(`https://advent.sveltesociety.dev/data/2023/day-one.json`);
 	const records: ElfTallyRecord[] = await response.json();
@@ -22,6 +22,7 @@ export const load: PageLoad = async ({ fetch }) => {
     // 6. Use both when need to fetch data from server but not want to directly pass the data to the client (e.g: doing some data processing or initialization etc).
     // 7. The exposed the data can also be accessed via `$page.data` however it is usually used when parent component wants to access the data from the child component.
 	return {
-        elfTallyRecords: records
+        elfTallyRecords: records,
+        form: data.form,
 	};
 };
