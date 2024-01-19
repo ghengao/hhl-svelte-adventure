@@ -3,6 +3,19 @@
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 	import { Button } from "$lib/components/ui/button";
 	import { MoreHorizontal } from "lucide-svelte";
+	import { createEventDispatcher } from "svelte";
+	import type { CustomEventHandler } from "bits-ui";
+
+	const dispatch = createEventDispatcher();
+	export let name = "";
+
+	function deleteRecord(evh: CustomEventHandler<MouseEvent, HTMLDivElement>) {
+		dispatch("deleteRecord", {name: name});
+	}
+
+	function editRecord(evh: CustomEventHandler<MouseEvent, HTMLDivElement>) {
+		dispatch("editRecord", {name: name});
+	}
 </script>
 
 <DropdownMenu.Root>
@@ -14,8 +27,8 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-            <DropdownMenu.Item>Edit</DropdownMenu.Item>
-            <DropdownMenu.Item>Delete</DropdownMenu.Item>
+            <DropdownMenu.Item on:click={editRecord}>Edit</DropdownMenu.Item>
+            <DropdownMenu.Item on:click={deleteRecord}>Delete</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

@@ -5,7 +5,11 @@ const config = {
 	darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	safelist: ["dark"],
+	plugins: [require('daisyui')],
 	theme: {
+		daisyui: {
+			themes: ["light"],
+		},
 		container: {
 			center: true,
 			padding: "2rem",

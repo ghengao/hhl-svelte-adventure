@@ -13,7 +13,6 @@ export const actions: Actions = {
         const form = await superValidate(event, formSchema)
         console.log(form)
         if (!form.valid) {
-            console.log("invalid")
             return fail(400, {form})
         }
         return {form}
