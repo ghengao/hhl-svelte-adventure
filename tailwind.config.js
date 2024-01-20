@@ -5,7 +5,7 @@ const config = {
 	darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	safelist: ["dark"],
-	plugins: [require('daisyui')],
+	plugins: [require("@tailwindcss/typography"), require('daisyui')],
 	theme: {
 		daisyui: {
 			themes: ["light"],
