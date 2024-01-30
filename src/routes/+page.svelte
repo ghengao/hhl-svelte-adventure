@@ -5,4 +5,5 @@
 	<a href="/advent/day-2">Day 2</a>
 	<a href="/advent/day-3">Day 3</a>
 	<a href="/advent/day-4">Day 4</a>
+	<a href="/advent/day-5">Day 5</a>
 </nav>

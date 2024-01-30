@@ -3,4 +3,13 @@ type ElfTallyRecord = {
 	tally: number;
 };
 
-export type { ElfTallyRecord };
+type TaskType = 'CREATED_TOY' | 'WRAPPED_PRESENT'
+
+interface Task {
+	elf: string
+	task: TaskType
+	minutesTaken: number
+    date: string;
+}
+
+export type { ElfTallyRecord, Task };
