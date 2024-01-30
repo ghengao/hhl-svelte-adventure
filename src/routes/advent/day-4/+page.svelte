@@ -10,13 +10,17 @@
 		heartRate: number;
 	};
 
+    // History of heart rates data, the id will keep increasing
 	let heartRates: Writable<HeartRate[]> = persistable<HeartRate[]>("heartRates", []);
-	// let historySize = 86400; // seconds in a day
-	let historySize = 100; // seconds in a day
+    // Total number of heart rates to show in the chart and kept in the history
+	let historySize = 100;
 
 	let latest = 0;
 	let highest = 0;
 	let lowest = -1;
+
+    // Flag to control the infinite loop start and stop
+	let started = false;
 
 	if ($heartRates.length > 0) {
 		latest = $heartRates[$heartRates.length - 1].heartRate;
@@ -24,6 +28,7 @@
 		lowest = Math.min(...$heartRates.map((row) => row.heartRate));
 	}
 
+    // Fetch data from the API and update the heartRates store
 	async function fetchData() {
 		console.log("fetching data");
 		const res = await fetch("https://advent.sveltesociety.dev/data/2023/day-four.json");
@@ -48,7 +53,6 @@
 		}
 	}
 
-	let started = false;
 
 	// Run a infinite loop to fetch data
 	async function loop() {
@@ -66,6 +70,8 @@
 	}
 
 	// Controls the infinite loop to start
+    // TODO: How to use the setInterval/clearInterval to do this instead?
+    // TODO: Add a clear data button.
 	function start() {
 		started = true;
 		loop();
@@ -76,8 +82,8 @@
 		started = false;
 	}
 
+    // Mounting the chart to the div canvas.
 	let myChart: Chart;
-
 	onMount(async (): Promise<any> => {
 		const data: HeartRate[] = $heartRates;
 		const chartDom = document.getElementById("chart") as ChartItem;
