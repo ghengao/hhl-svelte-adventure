@@ -37,7 +37,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"chart.js": "^4.4.1",
 		"clsx": "^2.1.0",
+		"echarts": "^5.4.3",
 		"formsnap": "^0.4.2",
 		"lucide-svelte": "^0.309.0",
 		"sveltekit-superforms": "^1.13.3",
